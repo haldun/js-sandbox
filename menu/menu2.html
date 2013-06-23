@@ -1,0 +1,121 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf8">
+<title>menu</title>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+<style>
+* {
+  font-family: 'Helvetica Neue';
+  outline: none;
+}
+
+body {
+  background-color: #000;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  display: block;
+  text-decoration: none;
+  padding: 10px;
+  margin-bottom: 10px;
+  color: #c4c4c4;
+}
+a:focus {
+  color: #fff;
+}
+
+div.hover {
+  color: #fff;
+  display: none;
+  position: absolute;
+  border: 2px solid #1027b1;
+  -webkit-box-shadow: 0px 0px 10px 3px rgba(16, 39, 170, 0.75);
+  background: -webkit-linear-gradient(rgba(255,255,255,0.2) 10%, rgba(0,0,0,0));
+  padding: 10px;
+  z-index: -100;
+}
+
+</style>
+</head>
+<body>
+  <div class="hover" id="hover"></div>
+  <ul data-size="3">
+    <li><a href="">1. Featured</a></li>
+    <li><a href="">2. Most Viewed</a></li>
+    <li><a href="">3. Most Recent</a></li>
+    <li><a href="">4. Top Rated</a></li>
+    <li><a href="">5. History</a></li>
+    <li><a href="">6. Search</a></li>
+  </ul>
+
+<script>
+$(function() {
+  var $menu = $('ul');
+  var menuSize = $menu.data('size');
+  var middleElementIndex = Math.ceil(menuSize / 2);
+
+  // hide extra elements
+  $menu.find('> li:gt(' + ( menuSize - 1) + ')').hide()
+  var previousFocusIndex = -1;
+
+  $('a').focus(function() {
+    var $a = $(this);
+    var $li = $a.parents('li:first');
+    var index = $li.index();
+    var direction = (index > previousFocusIndex) ? 'down' : 'up';
+    previousFocusIndex = index;
+
+    // what should we do?
+    // we will either move the hover or fix the hover and move the items.
+    var visibleIndex = $menu.find('> li:visible').index($li);
+
+    if (visibleIndex === middleElementIndex) {
+      console.log("scroll elements");
+    }
+
+    if (visibleIndex < middleElementIndex) {
+      console.log("move hover, we are at the top of the list");
+        $('#hover').css({
+        width: $a.width(),
+      }).show().animate({
+        top: $a.position().top,
+        height: $a.height()
+      }, 'fast');
+    } else if (visibleIndex > middleElementIndex) {
+      console.log("move hover, we are at the bottom of the list");
+    } else {
+      console.log(direction)
+      if (direction === 'down') {
+        $li.next().slideDown();
+        $li.prev().prev().slideUp();
+      } else {
+        $li.next().slideUp();
+        $li.prev().prev().slideDown();
+      }
+    }
+
+    // position hover
+
+    // should we scroll elements?
+    var shouldScroll = false;
+
+    if (shouldScroll) {
+
+    }
+
+    // $a.parents('li:first').prev().slideUp();
+    // $a.parents('li:first').next().slideDown();
+  });
+
+  $menu.find('> li').eq(0).find('a').focus();
+});
+</script>
+</body>
+</html>

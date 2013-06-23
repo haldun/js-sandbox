@@ -1,0 +1,181 @@
+<!doctype html>
+<html>
+<head>
+<title>menu</title>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+<style>
+* {
+  font-family: 'Helvetica Neue';
+  outline: none;
+}
+
+body {
+  background-color: #000;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  /*border: 1px solid red;*/
+}
+
+a {
+  display: block;
+  text-decoration: none;
+  padding: 10px;
+  margin-bottom: 10px;
+  color: #fff;
+}
+
+div.hover {
+  color: #fff;
+  display: none;
+  position: absolute;
+  border: 2px solid #1027b1;
+  -webkit-box-shadow: 0px 0px 10px 3px rgba(16, 39, 170, 0.75);
+  background: -webkit-linear-gradient(rgba(255,255,255,0.2) 10%, rgba(0,0,0,0));
+  padding: 10px;
+  z-index: -100;
+}
+</style>
+</head>
+<body>
+  <ul>
+    <li><a href="">Atlanta Hawks </a></li>
+    <li><a href="">Boston Celtics </a></li>
+    <li><a href="">Brooklyn Nets</a></li>
+    <li><a href="">Charlotte Bobcats </a></li>
+    <li><a href="">Chicago Bulls </a></li>
+    <li><a href="">Cleveland Cavaliers </a></li>
+    <li><a href="">Dallas Mavericks </a></li>
+    <li><a href="">Denver Nuggets </a></li>
+    <li><a href="">Detroit Pistons </a></li>
+    <li><a href="">Golden State Warriors </a></li>
+    <li><a href="">Houston Rockets </a></li>
+    <li><a href="">Indiana Pacers </a></li>
+    <li><a href="">LA Clippers </a></li>
+    <li><a href="">LA Lakers </a></li>
+    <li><a href="">Memphis Grizzlies </a></li>
+    <li><a href="">Miami Heat </a></li>
+    <li><a href="">Milwaukee Bucks </a></li>
+    <li><a href="">Minnesota Timberwolves </a></li>
+    <li><a href="">New Orleans Hornets </a></li>
+    <li><a href="">New York Knicks </a></li>
+    <li><a href="">Oklahoma City Thunder </a></li>
+    <li><a href="">Orlando Magic </a></li>
+    <li><a href="">Philadelphia Sixers </a></li>
+    <li><a href="">Phoenix Suns </a></li>
+    <li><a href="">Portland Trail Blazers </a></li>
+    <li><a href="">Sacramento Kings </a></li>
+    <li><a href="">San Antonio Spurs </a></li>
+    <li><a href="">Toronto Raptors </a></li>
+    <li><a href="">Utah Jazz </a></li>
+    <li><a href="">Washington Wizards</a></li>
+  </ul>
+
+<script>
+;(function($) {
+  $.fn.simpleMenu = function(options) {
+    var opts = $.extend({}, $.fn.simpleMenu.defaults, options);
+
+    var $hover = $('#hover');
+
+    if ($hover.length === 0) {
+      $hover = $('<div>').addClass(opts.hoverClass).hide().appendTo(document.body);
+    }
+
+    return this.each(function() {
+      $(this).find('a').focus(function() {
+        var $a = $(this);
+        $hover.css({
+          width: $a.width(),
+          height: $a.height(),
+        });
+
+        $hover.show().animate({
+          top: $a.position().top
+        }, 'fast');
+      });
+    });
+  };
+
+  $.fn.simpleMenu.defaults = {
+    hoverClass: 'hover'
+  };
+
+}(jQuery));
+</script>
+
+<script>
+;(function($) {
+  $.fn.advancedMenu = function(options) {
+    var opts = $.extend({}, $.fn.advancedMenu.defaults, options);
+
+    var $hover = $('#hover');
+
+    if ($hover.length === 0) {
+      $hover = $('<div>').addClass(opts.hoverClass).hide().appendTo(document.body);
+    }
+
+    var moveHoverTo = function(el) {
+      $hover.css({
+        width: $(el).width(),
+      }).show().animate({
+        top: $(el).position().top,
+        height: $(el).height()
+      }, 'fast');
+    };
+
+    var toggleRowVisibility = function($list, indexToShow, indexToHide) {
+      $list.find('li:eq(' + indexToShow + ')').slideDown('fast');
+      $list.find('li:eq(' + indexToHide + ')').slideUp('fast');
+    };
+
+    return this.each(function(){
+      var $list = $(this);
+      var numberOfRows = $list.find('> li').length;
+      var radius = Math.floor(opts.size / 2);
+      var previousFocusIndex = -1;
+
+      // hide elements
+      $list.find('> li:gt(' + ( opts.size - 1) + ')').hide();
+
+      $list.find('a').focus(function() {
+        var $row = $(this).parents('li').first();
+        var rowIndex = $row.index();
+        var isDirectionDown = rowIndex > previousFocusIndex;
+        previousFocusIndex = rowIndex;
+
+        if (isDirectionDown) {
+          if ((rowIndex < radius + 1) || (rowIndex + radius >= numberOfRows)) {
+            moveHoverTo(this);
+          } else {
+            toggleRowVisibility($list, rowIndex + radius, rowIndex - radius - 1);
+          }
+        } else {
+          if ((rowIndex < radius) || (rowIndex + radius >= numberOfRows - 1)) {
+            moveHoverTo(this);
+          } else {
+            toggleRowVisibility($list, rowIndex - radius, rowIndex + radius + 1);
+          }
+        }
+      });
+    });
+  };
+
+  $.fn.advancedMenu.defaults = {
+    size: 3,
+    hoverClass: 'hover'
+  };
+}(jQuery));
+</script>
+
+<script>
+
+// $('ul').simpleMenu();
+$('ul').advancedMenu({size: 5});
+
+</script>
+</body>
+</html>
